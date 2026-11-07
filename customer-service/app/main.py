@@ -129,7 +129,7 @@ def add_order_for_customer(orderID : int):
                 detail="Order not found"
             )
         else:
-            customer.orders.append(orderID);
+            customer.orderIds.append(orderID)
     except requests.RequestException:
         raise HTTPException(
             status_code=503,
