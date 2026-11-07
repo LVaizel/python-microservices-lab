@@ -5,10 +5,10 @@ from app.services.customerService import *
  
 import requests
 
-app = FastAPI(title="Order Service")
+app = FastAPI(title="Customer Service")
 
-# Product Service address
-PRODUCT_SERVICE_URL = "http://product-service:8001"
+# Order Service address
+ORDER_SERVICE_URL = "http://order-service:8002"
 
 @app.get("/")
 def home():
@@ -94,7 +94,7 @@ def get_customer_orders(customer_id: int):
     try:
         orders = []
         for order_id in order_ids:
-            response = requests.get(f"http://order-service:8002/orders/{order_id}")
+            response = requests.get(f"{ORDER_SERVICE_URL}/orders/{order_id}")
             if response.status_code == 200:
                 orders.append(response.json())
     except requests.RequestException:
