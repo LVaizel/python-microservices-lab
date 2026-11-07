@@ -24,7 +24,7 @@ def health():
     }
 
 @app.post("/customers")
-def create_customer(customer: CustomerRequest):
+def register_customer(customer: CustomerRequest):
     new_customer = add_new_customer(
         name=customer.name,
         email=customer.email,
