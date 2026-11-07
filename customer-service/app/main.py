@@ -28,7 +28,7 @@ def create_customer(customer: CustomerRequest):
     new_customer = add_new_customer(
         name=customer.name,
         email=customer.email,
-        passwordHash=sha256(customer.passwordHash.encode(), True).hexdigest()
+        passwordHash=sha256(customer.password.encode(), True).hexdigest()
     )
     return new_customer
 
@@ -53,7 +53,7 @@ def update_customer_details(customer_id: int, customer: CustomerRequest):
         customer_id=customer_id,
         name=customer.name,
         email=customer.email,
-        passwordHash=sha256(customer.passwordHash.encode(), True).hexdigest()
+        passwordHash=sha256(customer.password.encode(), True).hexdigest()
     )
     if updated_customer:
         return updated_customer
