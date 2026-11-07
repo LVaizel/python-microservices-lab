@@ -1,15 +1,11 @@
-class Product:
+from Pydantic import BaseModel
+
+class Product(BaseModel):
     id : int = 0
     name : str = ""
     price : float = 0.0
     stock : int = 0
-    
-    def __init__(self, id: int, name: str, price: float, stock: int):
-        self.id = id
-        self.name = name
-        self.price = price
-        self.stock = stock
-        
+            
     @classmethod
     def fromDict(cls, data: dict):
         return cls(

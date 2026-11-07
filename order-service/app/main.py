@@ -1,0 +1,113 @@
+from fastapi import FastAPI, HTTPException
+from app.models.orderRequest import OrderRequest
+from app.services.orderService import *
+from app.db import database
+import requests
+
+app = FastAPI(title="Order Service")
+
+# Product Service address
+PRODUCT_SERVICE_URL = "http://localhost:8001"
+
+@app.get("/")
+def home():
+    return {
+        "message": "Welcome to Order Service"
+    }
+    
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy",
+        "service": "order-service"
+    }
+    
+@app.post("/orders")
+def createOrder(order: OrderRequest):
+    try:
+        response = requests.get(
+            f"{PRODUCT_SERVICE_URL}/products/{order.product_id}",
+            timeout=5
+        )
+
+        if response.status_code == 404:
+            raise HTTPException(
+                status_code=404,
+                detail="Product not found"
+            )
+
+        response.raise_for_status()
+
+        product = response.json()
+
+    except requests.RequestException:
+        raise HTTPException(
+            status_code=503,
+            detail="Product Service is unavailable"
+        )
+    # Check stock
+    if order.quantity <= 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Quantity must be greater than zero"
+        )
+        
+    if order.quantity > product["stock"]:
+        raise HTTPException(
+            status_code=400,
+            detail="Insufficient product stock"
+        )
+    new_order = add_new_order(
+        product_id=product["id"],
+        product_name=product["name"],
+        unit_price=product["price"],
+        quantity=order.quantity
+    )
+    
+    return {
+
+        "message": "Order created successfully",
+
+        "order": new_order
+
+    }
+
+
+@app.get("/orders")
+def getOrders():
+    return fetch_all_orders()
+
+@app.get("/orders/{order_id}")
+def getOrder(order_id: int):
+    order = fetch_order_by_id(order_id)
+    if order:
+        return order
+
+    raise HTTPException(
+        status_code=404,
+        detail="Order not found"
+    )
+
+@app.put("/orders/{order_id}")
+def updateOrder(order_id: int, order: OrderRequest):
+    updated_order = update_order(order_id, quantity=order.quantity)
+    if updated_order:
+        return updated_order
+
+    raise HTTPException(
+        status_code=404,
+        detail="Order not found"
+    )
+
+@app.delete("/orders/{order_id}")
+def deleteOrder(order_id: int):
+    success = delete_order(order_id)
+    if success:
+        return {
+            "message": "Order deleted successfully"
+        }
+
+    raise HTTPException(
+        status_code=404,
+        detail="Order not found"
+    )

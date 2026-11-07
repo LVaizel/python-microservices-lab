@@ -45,7 +45,7 @@ def get_product(product_id: int):
     
 @app.post("/products")
 def create_product(product: Product):
-    new_product = add_new_product(product)
+    new_product = add_new_product(product.name, product.price, product.stock)
     return new_product
 
 @app.put("/products/{product_id}")
