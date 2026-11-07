@@ -84,6 +84,19 @@ def createOrder(order: OrderRequest):
         customer_id=order.customerId
     )
     
+    try:
+        #update customer orders
+        customer_orders_response = requests.get(
+            f"{CUSTOMER_SERVICE_URL}/customers/{order.customerId}/orders",
+            timeout=5
+        )
+        customer_orders_response.raise_for_status()
+    except requests.RequestException:
+        raise HTTPException(
+            status_code=503,
+            detail="Customer Service is unavailable"
+        )
+
     return {
 
         "message": "Order created successfully",
