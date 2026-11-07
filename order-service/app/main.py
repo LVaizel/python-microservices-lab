@@ -155,7 +155,7 @@ def deleteOrder(order_id: int):
         detail="Order not found"
     )
 
-@app.get("/orders/{customer_id}")
+@app.get("/orders/Customer/{customer_id}")
 def getCustomerOrders(customer_id: int):
     try:
         customer_response = requests.get(

@@ -84,7 +84,7 @@ def get_customer_orders(customer_id: int):
         )
     try:
         response = requests.get(
-            f"{ORDER_SERVICE_URL}/orders/{customer_id}",
+            f"{ORDER_SERVICE_URL}/orders/Customer/{customer_id}",
             timeout=5
         )
         response.raise_for_status()
