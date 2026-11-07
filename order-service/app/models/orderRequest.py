@@ -1,4 +1,4 @@
-from Pydantic import BaseModel
+from pydantic import BaseModel
 class OrderRequest(BaseModel):
     productId : int = 0
     quantity : int = 0

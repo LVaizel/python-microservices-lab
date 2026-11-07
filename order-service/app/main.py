@@ -7,7 +7,7 @@ import requests
 app = FastAPI(title="Order Service")
 
 # Product Service address
-PRODUCT_SERVICE_URL = "http://localhost:8001"
+PRODUCT_SERVICE_URL = "http://product-service:8001"
 
 @app.get("/")
 def home():
@@ -21,12 +21,12 @@ def health():
         "status": "healthy",
         "service": "order-service"
     }
-    
+  
 @app.post("/orders")
 def createOrder(order: OrderRequest):
     try:
         response = requests.get(
-            f"{PRODUCT_SERVICE_URL}/products/{order.product_id}",
+            f"{PRODUCT_SERVICE_URL}/products/{order.productId}",
             timeout=5
         )
 
@@ -89,8 +89,8 @@ def getOrder(order_id: int):
     )
 
 @app.put("/orders/{order_id}")
-def updateOrder(order_id: int, order: OrderRequest):
-    updated_order = update_order(order_id, quantity=order.quantity)
+def updateOrderAmount(order_id: int, Amount: int):
+    updated_order = update_order(order_id, quantity=Amount)
     if updated_order:
         return updated_order
 
