@@ -18,6 +18,6 @@ def update_customer(customer_id: int, name: str | None = None, email: str | None
 
 def fetch_customer_orders(customer_id: int) -> list[int]:
     customer = database.get_customer(customer_id)
-    if customer:
+    if customer and len(customer.orders) > 0:
         return customer.orders
     return []

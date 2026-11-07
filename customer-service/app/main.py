@@ -62,3 +62,48 @@ def update_customer_details(customer_id: int, customer: CustomerRequest):
         status_code=404,
         detail="Customer not found"
     )
+    
+@app.delete("/customers/{customer_id}")
+def delete_customer_entry(customer_id: int):
+    deleted_customer = delete_customer(customer_id)
+    if deleted_customer:
+        return deleted_customer
+
+    raise HTTPException(
+        status_code=404,
+        detail="Customer not found"
+    )
+    
+@app.get("/customers/{customer_id}/orders")
+def get_customer_orders(customer_id: int):
+    customer = fetch_customer_by_id(customer_id)
+    if not customer:
+        raise HTTPException(
+            status_code=404,
+            detail="Customer not found"
+        )
+    
+    order_ids = fetch_customer_orders(customer_id)
+    if not order_ids:
+        return {
+            "message": "No orders found for this customer",
+            "orders": []
+        }
+    
+    # Fetch order details from Order Service
+    try:
+        orders = []
+        for order_id in order_ids:
+            response = requests.get(f"http://order-service:8002/orders/{order_id}")
+            if response.status_code == 200:
+                orders.append(response.json())
+    except requests.RequestException:
+           raise HTTPException(
+               status_code=503,
+               detail="Order Service is unavailable"
+           )
+    
+    return {
+        "customer_id": customer_id,
+        "orders": orders
+    }
