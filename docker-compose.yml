@@ -8,6 +8,14 @@ services:
     networks:
       - ecommerce-network
   
+  customer-service:
+    build: ./customer-service
+    container_name: customer-service
+    ports:
+      - "8003:8003"
+    networks:
+      - ecommerce-network
+
   order-service:
     build: ./order-service
     container_name: order-service
@@ -15,14 +23,7 @@ services:
       - "8002:8002"
     depends_on:
       - product-service
-    networks:
-      - ecommerce-network
-  
-  customer-service:
-    build: ./customer-service
-    container_name: customer-service
-    ports:
-      - "8003:8003"
+      - customer-service
     networks:
       - ecommerce-network
 
