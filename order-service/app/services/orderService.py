@@ -1,8 +1,8 @@
 from app.db import database
 from app.models.order import Order
 
-def add_new_order(product_id: int, product_name: str, unit_price: float, quantity: int) -> Order:
-    return database.create_order(productId=product_id, productName=product_name, unitPrice=unit_price, quantity=quantity)
+def add_new_order(product_id: int, product_name: str, customer_id: int, unit_price: float, quantity: int) -> Order:
+    return database.create_order(productId=product_id, productName=product_name, customerId=customer_id, unitPrice=unit_price, quantity=quantity)
 
 def fetch_order_by_id(order_id: int) -> Order | None:
     return database.get_order(order_id)

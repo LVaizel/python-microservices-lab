@@ -9,10 +9,11 @@ def get_order(order_id: int) -> Order | None:
 def get_all_orders() -> list[Order]:
     return list(db.values())
 
-def create_order(productId: int, productName: str, quantity: int, unitPrice: float) -> Order:
+def create_order(productId: int, productName: str, customerId: int, quantity: int, unitPrice: float) -> Order:
     global current_id
     new_order = Order(
-        orderId=current_id, 
+        orderId=current_id,
+        customerId=customerId, 
         productId=productId,
         productName=productName, 
         quantity=quantity,

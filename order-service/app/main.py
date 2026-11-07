@@ -7,6 +7,7 @@ app = FastAPI(title="Customer Service")
 
 # Product Service address
 PRODUCT_SERVICE_URL = "http://product-service:8001"
+CUSTOMER_SERVICE_URL = "http://customer-service:8003"
 
 @app.get("/")
 def home():
@@ -24,25 +25,44 @@ def health():
 @app.post("/orders")
 def createOrder(order: OrderRequest):
     try:
-        response = requests.get(
+        product_response = requests.get(
             f"{PRODUCT_SERVICE_URL}/products/{order.productId}",
             timeout=5
         )
 
-        if response.status_code == 404:
+        if product_response.status_code == 404:
             raise HTTPException(
                 status_code=404,
                 detail="Product not found"
             )
 
-        response.raise_for_status()
+        product_response.raise_for_status()
 
-        product = response.json()
+        product = product_response.json()
 
     except requests.RequestException:
         raise HTTPException(
             status_code=503,
             detail="Product Service is unavailable"
+        )
+        
+    try:
+        customer_response = requests.get(
+            f"{CUSTOMER_SERVICE_URL}/customers/{order.customerId}",
+            timeout=5
+        )
+
+        if customer_response.status_code == 404:
+            raise HTTPException(
+                status_code=404,
+                detail="Customer not found"
+            )
+
+        customer_response.raise_for_status()
+    except requests.RequestException:
+        raise HTTPException(
+            status_code=503,
+            detail="Customer Service is unavailable"
         )
     # Check stock
     if order.quantity <= 0:
@@ -60,7 +80,8 @@ def createOrder(order: OrderRequest):
         product_id=product["id"],
         product_name=product["name"],
         unit_price=product["price"],
-        quantity=order.quantity
+        quantity=order.quantity,
+        customer_id=order.customerId
     )
     
     return {

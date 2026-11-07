@@ -1,13 +1,15 @@
 class Order:
     orderId: int
+    customerId: int
     productId: int
     productName: str
     quantity: int
     unitPrice: float
     totalPrice: float
     
-    def __init__(self, orderId: int, productId: int, productName: str, quantity: int, unitPrice: float):
+    def __init__(self, orderId: int, customerId: int, productId: int, productName: str, quantity: int, unitPrice: float):
         self.orderId = orderId
+        self.customerId = customerId
         self.productId = productId
         self.productName = productName
         self.quantity = quantity
@@ -22,6 +24,7 @@ class Order:
     def fromDict(cls, data: dict):
         return cls(
             orderId=data.get("orderId", 0),
+            customerId=data.get("customerId", 0),
             productId=data.get("productId", 0),
             productName=data.get("productName", ""),
             quantity=data.get("quantity", 0),
@@ -32,6 +35,7 @@ class Order:
     def new(cls):
         return cls(
             orderId=0,
+            customerId=0,
             productId=0,
             productName="",
             quantity=0,
@@ -39,7 +43,7 @@ class Order:
         )
     
     def __str__(self):
-        return f"Order(orderId={self.orderId}, productId={self.productId}, productName='{self.productName}', quantity={self.quantity}, unitPrice={self.unitPrice}, totalPrice={self.totalPrice})"
+        return f"Order(orderId={self.orderId}, customerId={self.customerId}, productId={self.productId}, productName='{self.productName}', quantity={self.quantity}, unitPrice={self.unitPrice}, totalPrice={self.totalPrice})"
     
     def __repr__(self):
         return self.__str__()
@@ -48,6 +52,7 @@ class Order:
         return {
             "orderId": self.orderId,
             "productId": self.productId,
+            "customerId": self.customerId,
             "productName": self.productName,
             "quantity": self.quantity,
             "unitPrice": self.unitPrice,

@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 class OrderRequest(BaseModel):
+    customerId : int = 0
     productId : int = 0
     quantity : int = 0
         

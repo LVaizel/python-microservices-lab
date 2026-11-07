@@ -107,3 +107,36 @@ def get_customer_orders(customer_id: int):
         "customer_id": customer_id,
         "orders": orders
     }
+    
+@app.post("/customers/{customer_id}/orders")
+def add_order_for_customer(orderID : int):
+    # Check if customer exists
+    customer = fetch_customer_by_id(orderID)
+    if not customer:
+        raise HTTPException(
+            status_code=404,
+            detail="Customer not found"
+        )
+    
+    # Create order for the customer
+    try:
+        response = requests.post(f"{ORDER_SERVICE_URL}/orders/{orderID}")
+        response.raise_for_status()
+        
+        if response.status_code == 404:
+            raise HTTPException(
+                status_code=404,
+                detail="Order not found"
+            )
+        else:
+            customer.orders.append(orderID);
+    except requests.RequestException:
+        raise HTTPException(
+            status_code=503,
+            detail="Order Service is unavailable"
+        )
+    
+    return {
+        "message": "Order added successfully"
+    }
+    
