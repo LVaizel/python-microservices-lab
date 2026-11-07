@@ -7,6 +7,9 @@ def add_new_order(product_id: int, product_name: str, unit_price: float, quantit
 def fetch_order_by_id(order_id: int) -> Order | None:
     return database.get_order(order_id)
 
+def fetch_orders_by_ids(order_ids: list[int]) -> list[Order]:
+    return [database.get_order(order_id) for order_id in order_ids if database.get_order(order_id) is not None]
+
 def fetch_all_orders() -> list[Order]:
     return database.get_all_orders()
 

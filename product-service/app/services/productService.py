@@ -11,3 +11,6 @@ def fetch_product_by_id(product_id: int) -> Product | None:
 def fetch_all_products() -> list[Product]:
     return database.get_all_products()
 
+def update_product_by_id(product_id: int, name: str | None = None, price: float | None = None, stock: int | None = None) -> Product | None:
+    return database.update_product(product_id, name=name, price=price, stock=stock)
+

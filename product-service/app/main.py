@@ -1,15 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from app.models.product import Product
 from app.services.productService import *
-from app.db import database
 
 app = FastAPI(title="Product Service")
 
 # Sample product database
-database.create_product(name="Laptop", price=10.99, stock=100)
-database.create_product(name="Keyboard", price=15.49, stock=50)
-database.create_product(name="Mouse", price=7.99, stock=200)
-database.create_product(name="Monitor", price=12.99, stock=75)
+add_new_product(productName="Laptop", unitPrice=10.99, stock=100)
+add_new_product(productName="Keyboard", unitPrice=15.49, stock=50)
+add_new_product(productName="Mouse", unitPrice=7.99, stock=200)
+add_new_product(productName="Monitor", unitPrice=12.99, stock=75)
 
 @app.get("/")
 def home():
@@ -28,13 +27,13 @@ def health():
 
 @app.get("/products")
 def get_products():
-    return database.get_all_products()
+    return fetch_all_products()
 
 
 @app.get("/products/{product_id}")
 def get_product(product_id: int):
 
-    product = database.get_product(product_id)
+    product = fetch_product_by_id(product_id)
     if product:
         return product
 
@@ -50,7 +49,7 @@ def create_product(product: Product):
 
 @app.put("/products/{product_id}")
 def update_product(product_id: int, product: Product):
-    updated_product = database.update_product(
+    updated_product = update_product_by_id(
         product_id=product_id,
         name=product.name,
         price=product.price,

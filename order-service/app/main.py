@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from app.models.orderRequest import OrderRequest
 from app.services.orderService import *
-from app.db import database
 import requests
 
 app = FastAPI(title="Order Service")
@@ -76,6 +75,16 @@ def createOrder(order: OrderRequest):
 @app.get("/orders")
 def getOrders():
     return fetch_all_orders()
+
+@app.get("/orders/batch")
+def getOrdersByIds(order_ids: list[int]):
+    orders = fetch_orders_by_ids(order_ids)
+    if not orders:
+        raise HTTPException(
+            status_code=404,
+            detail="No orders found for the provided IDs"
+        )
+    return orders
 
 @app.get("/orders/{order_id}")
 def getOrder(order_id: int):
