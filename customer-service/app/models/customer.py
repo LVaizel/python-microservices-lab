@@ -4,11 +4,7 @@ class Customer(BaseModel):
     name: str
     email: str
     passwordHash: str
-    orderIds: list[int] = []
     
-    def addOrderId(self, orderId: int):
-        self.orderIds.append(orderId)
-        
     @classmethod
     def fromDict(cls, data: dict):
         customer = cls(

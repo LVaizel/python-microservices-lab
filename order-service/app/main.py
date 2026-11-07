@@ -154,3 +154,32 @@ def deleteOrder(order_id: int):
         status_code=404,
         detail="Order not found"
     )
+
+@app.get("/orders/{customer_id}")
+def getCustomerOrders(customer_id: int):
+    try:
+        customer_response = requests.get(
+            f"{CUSTOMER_SERVICE_URL}/customers/{customer_id}",
+            timeout=5
+        )
+
+        if customer_response.status_code == 404:
+            raise HTTPException(
+                status_code=404,
+                detail="Customer not found"
+            )
+
+        customer_response.raise_for_status()
+    except requests.RequestException:
+        raise HTTPException(
+            status_code=503,
+            detail="Customer Service is unavailable"
+        )
+    
+    orders = fetch_orders_by_customer_id(customer_id)
+    if not orders or len(orders) == 0:
+        raise HTTPException(
+            status_code=404,
+            detail="No orders found for the provided customer ID"
+        )
+    return orders

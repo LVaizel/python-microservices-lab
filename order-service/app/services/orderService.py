@@ -21,3 +21,6 @@ def delete_order(order_id: int) -> bool:
         del database.db[order_id]
         return True
     return False
+
+def fetch_orders_by_customer_id(customer_id: int) -> list[Order]:
+    return [order for order in database.get_all_orders() if order.customerId == customer_id]

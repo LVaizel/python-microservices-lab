@@ -82,61 +82,15 @@ def get_customer_orders(customer_id: int):
             status_code=404,
             detail="Customer not found"
         )
-    
-    order_ids = fetch_customer_orders(customer_id)
-    if not order_ids:
-        return {
-            "message": "No orders found for this customer",
-            "orders": []
-        }
-    
-    # Fetch order details from Order Service
     try:
-        orders = []
-        for order_id in order_ids:
-            response = requests.get(f"{ORDER_SERVICE_URL}/orders/{order_id}")
-            if response.status_code == 200:
-                orders.append(response.json())
-    except requests.RequestException:
-           raise HTTPException(
-               status_code=503,
-               detail="Order Service is unavailable"
-           )
-    
-    return {
-        "customer_id": customer_id,
-        "orders": orders
-    }
-    
-@app.post("/customers/{customer_id}/orders")
-def add_order_for_customer(orderID : int):
-    # Check if customer exists
-    customer = fetch_customer_by_id(orderID)
-    if not customer:
-        raise HTTPException(
-            status_code=404,
-            detail="Customer not found"
+        response = requests.get(
+            f"{ORDER_SERVICE_URL}/orders/{customer_id}",
+            timeout=5
         )
-    
-    # Create order for the customer
-    try:
-        response = requests.post(f"{ORDER_SERVICE_URL}/orders/{orderID}")
         response.raise_for_status()
-        
-        if response.status_code == 404:
-            raise HTTPException(
-                status_code=404,
-                detail="Order not found"
-            )
-        else:
-            customer.orderIds.append(orderID)
     except requests.RequestException:
         raise HTTPException(
             status_code=503,
             detail="Order Service is unavailable"
         )
-    
-    return {
-        "message": "Order added successfully"
-    }
-    
+    return response.json()
