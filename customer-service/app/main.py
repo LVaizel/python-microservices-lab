@@ -88,6 +88,12 @@ def get_customer_orders(customer_id: int):
             timeout=5
         )
         response.raise_for_status()
+        
+        if response.status_code == 404:
+            raise HTTPException(
+                status_code=404,
+                detail="Orders not found for the customer"
+            )
     except requests.RequestException:
         raise HTTPException(
             status_code=503,
