@@ -3,7 +3,7 @@ from app.models.orderRequest import OrderRequest
 from app.services.orderService import *
 import requests
 
-app = FastAPI(title="Order Service")
+app = FastAPI(title="Customer Service")
 
 # Product Service address
 PRODUCT_SERVICE_URL = "http://product-service:8001"
