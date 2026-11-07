@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException
+from hashlib import sha256
 from app.models.customerRequest import CustomerRequest
 from app.services.customerService import *
-from hashlib import sha256 
-
+ 
 import requests
 
 app = FastAPI(title="Order Service")
